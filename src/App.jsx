@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './App.css'
+import OkienkoZLicznikiem from './OkienkoZLicznikiem';
 
   const alfabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -20,26 +21,50 @@ import './App.css'
     return alfabet[wynik];
 
   }
+
+
 function App() {
 
   const [tekst, setTekst] = useState("HELLO");
   const [przesuniecie, setPrzesuniecie] = useState(3);
+  const [aktualnyZnak, setAktualnyZnak] = useState(0); // oznacza, że nie zaczęliśmy jeszcze szyfrować
 
-  const zaszyfrowanyTekst = tekst.split("").map((znak) => szyfruj(znak, przesuniecie)).join(""); 
+  const zaszyfrowanyTekst = tekst.split("", aktualnyZnak).map((znak) => szyfruj(znak, przesuniecie)).join("");
+
+  // const zaszyfrowanyTekst = tekst.split("").map((znak) => szyfruj(znak, przesuniecie)).join(""); 
   //split zamienia tekst na tablicę znaków, map przetwarza każdy znak, a join łączy je z powrotem w string
+
+  function szyfrujNastepnaLitere() {
+    setAktualnyZnak(aktualnyZnak + 1);
+    }
+
+  function szyfrujCalosc() {
+    setAktualnyZnak(tekst.length);
+  }
 
   return (
     <>
 
-        <input type="text" placeholder="Wpisz" value={tekst} onChange={(e) => setTekst(e.target.value)}/>
-        <input type="range" min="1" max="25" value={przesuniecie} onChange={(e) => setPrzesuniecie(parseInt(e.target.value))}/>
+        <input type="text" placeholder="Wpisz" 
+        value={tekst} 
+        onChange={(e) => {
+          setTekst(e.target.value);
+          setAktualnyZnak(0); 
+  }} />
+        <input type="range" min="1" max="25" value={przesuniecie} onChange={(e) => {
+          setPrzesuniecie(parseInt(e.target.value));
+          setAktualnyZnak(0); 
+        }} />
 
         <p>Tekst: {tekst}</p>
         <p>Zaszyfrowany tekst: {zaszyfrowanyTekst}</p>
         <p>Przesunięcie: {przesuniecie}</p>
 
+        <button onClick={szyfrujNastepnaLitere}>Zaszyfruj następny znak</button>
+        <button onClick={() =>szyfrujCalosc()}>Zaszyfruj całość</button>
+
     </>
   )
-}
 
+}
 export default App
